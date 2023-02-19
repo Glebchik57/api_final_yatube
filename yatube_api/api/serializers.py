@@ -1,10 +1,11 @@
 import base64
 
 from django.core.files.base import ContentFile
-from posts.models import Comment, Follow, Group, Post, User
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
+
+from posts.models import Comment, Follow, Group, Post, User
 
 
 class Base64ImageField(serializers.ImageField):
@@ -27,9 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
+    author = SlugRelatedField(read_only=True, slug_field='username')
 
     class Meta:
         fields = ('id', 'author', 'post', 'text', 'created')
@@ -52,11 +51,6 @@ class FollowSerializer(serializers.ModelSerializer):
     following = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username'
-    )
-
-    following = serializers.SlugRelatedField(
-        slug_field='username',
-        queryset=User.objects.all()
     )
 
     def validate(self, data):
